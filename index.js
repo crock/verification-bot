@@ -31,11 +31,15 @@ client.on('message', async msg => {
     // If sender of message is not the guild owner, cancel action
     if (msg.member.guild.owner.id !== msg.member.id) return
     
+    const introMessageContent = fs.readFileSync('intro-message.md', {encoding:'utf8', flag:'r'})
     const communityGuidelinesContent = fs.readFileSync('community-guidelines.md', {encoding:'utf8', flag:'r'})
     const verificationMessageContent = fs.readFileSync('verification-message.md', {encoding:'utf8', flag:'r'})
     
     const embed = new Discord.RichEmbed()
+    
+    const welcomeTitle = '<:domaincord:637434582500900864> Welcome to Domaincord!'
       
+    embed.addField(welcomeTitle, introMessageContent)
     embed.addField('🎗 Community Guidelines', communityGuidelinesContent)
     embed.addField('🔐 Getting Verified', verificationMessageContent)
     
