@@ -1,0 +1,24 @@
+steps:
+    # Build the container image
+    - name: "gcr.io/cloud-builders/docker"
+      args: ["build", "-t", "gcr.io/$PROJECT_ID/${_REPO}", "."]
+    # Push the container image to Container Registry
+    - name: "gcr.io/cloud-builders/docker"
+      args: ["push", "gcr.io/$PROJECT_ID/${_REPO}"]
+    # Update existing compute engine vm instance with new Docker image
+    - name: "gcr.io/cloud-builders/gcloud"
+      args:
+          [
+              "compute",
+              "instances",
+              "update-container",
+              "${_REPO}",
+              "--zone",
+              "${_ZONE}",
+              "--container-image=gcr.io/$PROJECT_ID/${_REPO}",
+          ]
+substitutions:
+    _REPO: "verification-bot"
+    _ZONE: "us-east1-b"
+timeout: "1600s"
+images: ["gcr.io/$PROJECT_ID/${_REPO}"]
