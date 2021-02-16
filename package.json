@@ -1,12 +1,14 @@
 {
-  "name": "domaincord-verification-bot",
   "private": false,
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0"
   },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
   "scripts": {
     "start": "node index.js",
-    "dev": "NODE_ENV=development nodemon index.js"
+    "dev": "nodemon index.js"
   }
 }
