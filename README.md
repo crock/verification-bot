@@ -16,8 +16,7 @@ I'm assuming you already know how to get a bot token and add the bot to your ser
 7. **As the guild owner**, run the command `[prefix]svm` in the #verification channel
 
 _Note:_ 
-- If you want to change the name of the verification channel, you need to change the value on lines 69 and 87.
-- If you want others to be able to run the command instead of the guild owner, remove or comment out line 36.
+- If you want to change the name of the verification channel, you need to change the value on lines 72 and 92.
 
 ## Command Output
 ![screenshot of command output](https://i.imgur.com/WtcdYsM.png)
