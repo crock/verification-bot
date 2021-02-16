@@ -1,8 +1,10 @@
 require("dotenv").config();
-// Some hardcoded variables that you can change
-const prefix = "?";
-const guild_id = "488540747361026058";
-const verified_role_id = "652669689683509249";
+const { TOKEN, PREFIX, GUILD_ID, ROLE_ID, CHANNEL_ID } = process.env;
+
+const prefix = PREFIX || "?";
+const guild_id = GUILD_ID || "488540747361026058";
+const verified_role_id = ROLE_ID || "652669689683509249";
+const verification_channel_id = CHANNEL_ID || "652670588615393320";
 
 const fs = require("fs");
 const Discord = require("discord.js");
@@ -21,10 +23,7 @@ client.on("message", msg => {
     .trim()
     .split(/ +/g);
 
-  const command = args
-    .shift()
-    .toLowerCase()
-    .replace("/", "");
+  const command = args.shift().toLowerCase();
 
   // svm = set verification message
   if (
@@ -56,9 +55,13 @@ client.on("message", msg => {
     embed.addField("🎗 Community Guidelines", communityGuidelinesContent);
     embed.addField("🔐 Getting Verified", verificationMessageContent);
 
-    msg.channel
-      .send({ embed })
-      .then(theVerificationMessage => theVerificationMessage.react("👍"));
+    msg.channel.send({ embed }).then(message => {
+      message.react("👍");
+      fs.writeFileSync(
+        "data.json",
+        JSON.stringify({ messageId: message.id }, null, 4)
+      );
+    });
     msg.delete();
   }
 
@@ -70,12 +73,14 @@ client.on("messageReactionAdd", ({ message: { channel } }, user) => {
     channel.guild
       .fetchMember(user)
       .then(member => {
-        return member.addRole(verified_role_id);
-      })
-      .then(() => {
-        console.log(
-          `The ${roleName} role has been added to member ${user.tag} successfully!`
-        );
+        member
+          .addRole(verified_role_id)
+          .then(() => {
+            console.log(
+              `The ${roleName} has been removed from member ${user.tag} successfully!`
+            );
+          })
+          .catch(e => console.error("Error adding role"));
       })
       .catch(error => {
         console.error(error);
@@ -88,12 +93,14 @@ client.on("messageReactionRemove", ({ message: { channel } }, user) => {
     channel.guild
       .fetchMember(user)
       .then(member => {
-        return member.removeRole(verified_role_id);
-      })
-      .then(() => {
-        console.log(
-          `The ${roleName} has been removed from member ${user.tag} successfully!`
-        );
+        member
+          .removeRole(verified_role_id)
+          .then(() => {
+            console.log(
+              `The ${roleName} has been removed from member ${user.tag} successfully!`
+            );
+          })
+          .catch(e => console.error("Error removing role"));
       })
       .catch(error => {
         console.error(error);
@@ -128,8 +135,27 @@ client.on("raw", ({ d: data, t: event }) => {
   }
 });
 
-if (process.env.TOKEN !== null) {
-  client.login(process.env.TOKEN);
+client.on("guildMemberRemove", function(member) {
+  try {
+    const { messageId } = JSON.parse(fs.readFileSync("data.json"));
+    const channel = client.channels.get(verification_channel_id);
+    channel
+      .fetchMessage(messageId)
+      .then(message => {
+        message.reactions.map(reaction => {
+          reaction.remove(member.user.id);
+        });
+      })
+      .catch(console.error);
+  } catch (e) {
+    console.error(
+      `data.json doesn't exist. Re-run ${prefix}svm in the #verification channel and delete the previous message.`
+    );
+  }
+});
+
+if (TOKEN !== null) {
+  client.login(TOKEN);
 } else {
   console.error("Bot token is empty!");
 }
