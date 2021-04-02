@@ -1,10 +1,9 @@
 require("dotenv").config();
-const { TOKEN, PREFIX, GUILD_ID, ROLE_ID, CHANNEL_ID } = process.env;
 
-const prefix = PREFIX || "?";
-const guild_id = GUILD_ID || "488540747361026058";
-const verified_role_id = ROLE_ID || "652669689683509249";
-const verification_channel_id = CHANNEL_ID || "652670588615393320";
+const prefix = process.env.PREFIX || "?";
+const guild_id = process.env.GUILD_ID;
+const verified_role_id = process.env.ROLE_ID;
+const verification_channel_id = process.env.CHANNEL_ID;
 
 const fs = require("fs");
 const Discord = require("discord.js");
