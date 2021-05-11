@@ -9,6 +9,7 @@ const fs = require("fs");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 let roleName = "";
+TOKEN = "You Token"
 
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
