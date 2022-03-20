@@ -4,6 +4,7 @@ const prefix = process.env.PREFIX || "?";
 const guild_id = process.env.GUILD_ID;
 const verified_role_id = process.env.ROLE_ID;
 const verification_channel_id = process.env.CHANNEL_ID;
+const TOKEN = process.env.TOKEN;
 
 const fs = require("fs");
 const Discord = require("discord.js");
